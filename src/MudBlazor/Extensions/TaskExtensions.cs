@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using MudBlazor.Exceptions;
 
 namespace MudBlazor
 {
@@ -11,6 +12,19 @@ namespace MudBlazor
 
     public static class TaskExtensions
     {
+        public static async void AndForget(this Task task, IMudComponentException componentException)
+        {
+            try
+            {
+                await task;
+            }
+            catch (Exception exception)
+            {
+               componentException.ProcessError(exception);
+            }
+        }
+
+
         /// <summary>
         /// Task will be awaited and exceptions will be logged to console (TaskOption.Safe) or managed by the Blazor framework (TaskOption.None).
         /// </summary>

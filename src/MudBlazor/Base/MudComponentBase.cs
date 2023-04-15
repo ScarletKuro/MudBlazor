@@ -2,17 +2,21 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
+using MudBlazor.Exceptions;
 using MudBlazor.Interfaces;
 
 namespace MudBlazor
 {
 #nullable enable
-    public abstract class MudComponentBase : ComponentBase, IMudStateHasChanged
+    public abstract class MudComponentBase : ComponentBase, IMudComponentException, IMudStateHasChanged
     {
         [Inject]
         private ILoggerFactory LoggerFactory { get; set; } = null!;
         private ILogger? _logger;
         protected ILogger Logger => _logger ??= LoggerFactory.CreateLogger(GetType());
+
+        [Parameter]
+        public EventCallback<Exception> ErrorHandler { get; set; }
 
         /// <summary>
         /// User class names, separated by space.
@@ -50,5 +54,10 @@ namespace MudBlazor
 
         /// <inheritdoc />
         void IMudStateHasChanged.StateHasChanged() => StateHasChanged();
+
+        public virtual void ProcessError(Exception error)
+        {
+            ErrorHandler.InvokeAsync(error);
+        }
     }
 }

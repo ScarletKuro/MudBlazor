@@ -1,0 +1,24 @@
+﻿@namespace MudBlazor
+@inherits MudComponentBase
+
+@code {
+    private bool _throwable;
+
+    [Parameter]
+    public bool Throwable
+    {
+        get => _throwable;
+        set
+        {
+            _throwable = value;
+            ThrowAsync().AndForget(this);
+        }
+    }
+
+    private async Task ThrowAsync()
+    {
+        //Simulate work
+        await Task.Delay(1000);
+        throw new Exception("Ups :(");
+    }
+}
