@@ -58,9 +58,15 @@ namespace MudBlazor
         [Parameter]
         public RenderFragment? ChildContent { get; set; }
 
+        /// <summary>
+        /// Sets the callback for the animation end event.
+        /// </summary>
         [Parameter]
         public EventCallback OnAnimationEnd { get; set; }
 
+        /// <summary>
+        /// Sets the callback for the expanded changed event.
+        /// </summary>
         [Parameter]
         public EventCallback<bool> ExpandedChanged { get; set; }
 
@@ -85,8 +91,6 @@ namespace MudBlazor
             {
                 _state = CollapseState.Entered;
             }
-
-            await ExpandedChanged.InvokeAsync(_expandedState.Value);
         }
 
         /// <summary>
