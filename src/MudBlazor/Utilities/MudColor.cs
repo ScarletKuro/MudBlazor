@@ -6,6 +6,9 @@ using System;
 using System.Globalization;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 using MudBlazor.Extensions;
 
 namespace MudBlazor.Utilities
@@ -42,7 +45,7 @@ namespace MudBlazor.Utilities
     /// Represents a color with methods to manipulate color values.
     /// </summary>
     [Serializable]
-    public class MudColor : ISerializable, IEquatable<MudColor>
+    public class MudColor : ISerializable, IXmlSerializable, IEquatable<MudColor>
     {
         private const double Epsilon = 0.000000000000001;
         private readonly byte[] _valuesAsByte;
@@ -246,7 +249,8 @@ namespace MudBlazor.Utilities
         /// <param name="g">The green component value (0 to 255).</param>
         /// <param name="b">The blue component value (0 to 255).</param>
         /// <param name="color">The existing color to copy the hue value from.</param>
-        public MudColor(byte r, byte g, byte b, MudColor color) : this(r, g, b, color.A)
+        public MudColor(byte r, byte g, byte b, MudColor color)
+            : this(r, g, b, color.A)
         {
             H = color.H;
         }
@@ -641,6 +645,43 @@ namespace MudBlazor.Utilities
             info.AddValue(nameof(G), G);
             info.AddValue(nameof(B), B);
             info.AddValue(nameof(A), A);
+        }
+
+        /// <inheritdoc />
+        public XmlSchema? GetSchema() => null;
+
+        /// <inheritdoc />
+        public void ReadXml(XmlReader reader)
+        {
+            var r = ReadElementContentAsByte(reader, nameof(R));
+            var g = ReadElementContentAsByte(reader, nameof(G));
+            var b = ReadElementContentAsByte(reader, nameof(B));
+            var a = ReadElementContentAsByte(reader, nameof(A));
+
+            // If we use readonly struct we need to use: Unsafe.AsRef(this) = new MudColor(r, g, b, a);
+            _valuesAsByte[0] = r;
+            _valuesAsByte[1] = g;
+            _valuesAsByte[2] = b;
+            _valuesAsByte[3] = a;
+
+            static byte ReadElementContentAsByte(XmlReader reader, string attributeName)
+            {
+                if (reader.MoveToAttribute(attributeName) && byte.TryParse(reader.Value, out var result))
+                {
+                    return result;
+                }
+
+                return 0;
+            }
+        }
+
+        /// <inheritdoc />
+        public void WriteXml(XmlWriter writer)
+        {
+            writer.WriteAttributeString(nameof(R), R.ToString());
+            writer.WriteAttributeString(nameof(G), G.ToString());   
+            writer.WriteAttributeString(nameof(B), B.ToString());   
+            writer.WriteAttributeString(nameof(A), A.ToString());   
         }
     }
 }

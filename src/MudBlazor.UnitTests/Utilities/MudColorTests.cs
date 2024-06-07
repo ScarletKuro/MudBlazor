@@ -57,6 +57,35 @@ namespace MudBlazor.UnitTests.Utilities
         }
 
         [Test]
+        public void MudColor_XMLStandard_Serialization()
+        {
+            var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(MudColor));
+
+            MudColor DeserializeXml(string toDeserialize)
+            {
+                using var textReader = new StringReader(toDeserialize);
+
+                return (MudColor)xmlSerializer.Deserialize(textReader);
+            }
+
+            string SerializeXml(MudColor mudColorObject)
+            {
+                using var textWriter = new StringWriter();
+                xmlSerializer.Serialize(textWriter, mudColorObject);
+
+                return textWriter.ToString();
+            }
+
+            var originalMudColor = new MudColor("#f6f9fb");
+
+            var xmlString = SerializeXml(originalMudColor);
+            var deserializeMudColor = DeserializeXml(xmlString);
+
+            xmlString.Should().Be("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<MudColor R=\"246\" G=\"249\" B=\"251\" A=\"255\" />");
+            deserializeMudColor.Should().Be(originalMudColor);
+        }
+
+        [Test]
         public void MudColor_XMLDataContract_Serialization()
         {
             var dataContractSerializer = new System.Runtime.Serialization.DataContractSerializer(typeof(MudColor));
