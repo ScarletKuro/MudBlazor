@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using MudBlazor.Extensions;
@@ -679,9 +680,9 @@ namespace MudBlazor.Utilities
         public void WriteXml(XmlWriter writer)
         {
             writer.WriteAttributeString(nameof(R), R.ToString());
-            writer.WriteAttributeString(nameof(G), G.ToString());   
-            writer.WriteAttributeString(nameof(B), B.ToString());   
-            writer.WriteAttributeString(nameof(A), A.ToString());   
+            writer.WriteAttributeString(nameof(G), G.ToString());
+            writer.WriteAttributeString(nameof(B), B.ToString());
+            writer.WriteAttributeString(nameof(A), A.ToString());
         }
     }
 }
