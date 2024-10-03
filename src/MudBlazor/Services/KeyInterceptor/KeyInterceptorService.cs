@@ -62,6 +62,10 @@ internal class KeyInterceptorService : IKeyInterceptorService
                 _observerManager.Subscribe(observer.ElementId, observer);
             }
         }
+        else
+        {
+            _observerManager.Subscribe(observer.ElementId, observer);
+        }
     }
 
     /// <inheritdoc />
